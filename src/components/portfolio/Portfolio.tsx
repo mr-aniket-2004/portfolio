@@ -824,10 +824,13 @@ export function Education() {
   );
 }
 export function Contact() {
-  const [form, setForm] = useState({ name: "", email: "", message: "", website: "" });
+  const [form, setForm] = useState({ name: "", email: "", message: "", _gotcha: "" });
   const [state, setState] = useState<"idle" | "sending" | "success" | "error">("idle");
   const [error, setError] = useState("");
   const [copied, setCopied] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
+  const submissionInProgress = useRef(false);
+
   async function copy() {
     try {
       await navigator.clipboard.writeText(content.email);
@@ -837,12 +840,19 @@ export function Contact() {
       setError("Unable to copy. Please select the email address instead.");
     }
   }
+
   async function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (form.website) {
+    if (submissionInProgress.current) return;
+
+    // Honeypot: real visitors never fill this hidden field
+    if (form._gotcha) {
       setState("success");
+      formRef.current?.reset();
+      setForm({ name: "", email: "", message: "", _gotcha: "" });
       return;
     }
+
     if (
       !form.name.trim() ||
       !form.message.trim() ||
@@ -852,32 +862,56 @@ export function Contact() {
       setState("error");
       return;
     }
+
     const endpoint = import.meta.env["VITE_CONTACT_ENDPOINT"];
     if (!endpoint) {
       setError("The contact form is not connected yet. Please email me directly.");
       setState("error");
       return;
     }
+
+    submissionInProgress.current = true;
     setState("sending");
     setError("");
+
     try {
       const res = await fetch(endpoint, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
         body: JSON.stringify({
           name: form.name.trim(),
           email: form.email.trim(),
           message: form.message.trim(),
         }),
       });
-      if (!res.ok) throw new Error("send failed");
+
+      if (!res.ok) {
+        let detail = "";
+        try {
+          const data = await res.json();
+          detail = data?.error || data?.errors?.[0]?.message || "";
+        } catch {
+          /* response was not JSON */
+        }
+        throw new Error(detail || `send failed (${res.status})`);
+      }
+
       setState("success");
-      setForm({ name: "", email: "", message: "", website: "" });
-    } catch {
+      formRef.current?.reset();
+      setForm({ name: "", email: "", message: "", _gotcha: "" });
+      setError("");
+    } catch (err) {
+      console.error("Contact form error:", err);
       setState("error");
       setError("Your message could not be sent. Please try again or email me directly.");
+    } finally {
+      submissionInProgress.current = false;
     }
   }
+
   return (
     <section id="contact" className="contact-section">
       <div className="page-width contact-grid">
@@ -917,17 +951,25 @@ export function Contact() {
             </a>
           </div>
         </div>
-        <form className="contact-form" onSubmit={submit}>
+
+        <form
+          ref={formRef}
+          className="contact-form"
+          onSubmit={submit}
+          aria-busy={state === "sending"}
+        >
           <div className="form-heading">
             <Mail size={18} />
             <span>A message is a good place to start.</span>
           </div>
+
           <div className="field-row">
             <label>
               Name
               <input
                 name="name"
                 required
+                disabled={state === "sending"}
                 autoComplete="name"
                 placeholder="Your name"
                 value={form.name}
@@ -940,6 +982,7 @@ export function Contact() {
                 name="email"
                 type="email"
                 required
+                disabled={state === "sending"}
                 autoComplete="email"
                 placeholder="you@example.com"
                 value={form.email}
@@ -947,33 +990,42 @@ export function Contact() {
               />
             </label>
           </div>
+
           <label>
             Message
             <textarea
               name="message"
               required
+              disabled={state === "sending"}
               rows={5}
               placeholder="Tell me about the role or your project…"
               value={form.message}
               onChange={(e) => setForm({ ...form, message: e.target.value })}
             />
           </label>
+
+          {/* Honeypot (hidden from real visitors) */}
           <div className="honeypot" aria-hidden="true">
             <label>
-              Website
+              Leave this field empty
               <input
-                name="website"
+                name="_gotcha"
+                disabled={state === "sending"}
                 tabIndex={-1}
                 autoComplete="off"
-                value={form.website}
-                onChange={(e) => setForm({ ...form, website: e.target.value })}
+                data-lpignore="true"
+                data-1p-ignore="true"
+                value={form._gotcha}
+                onChange={(e) => setForm({ ...form, _gotcha: e.target.value })}
               />
             </label>
           </div>
-          <Button type="submit" disabled={state === "sending"}>
+
+          <Button type="submit" disabled={state === "sending" || submissionInProgress.current}>
             {state === "sending" ? "Sending…" : content.contact.button}
             <Send size={15} />
           </Button>
+
           <div
             aria-live="polite"
             className={`form-feedback ${state === "error" ? "is-error" : ""}`}
