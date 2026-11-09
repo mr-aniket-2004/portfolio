@@ -46,6 +46,7 @@ import { LuDatabase, LuWebhook } from "react-icons/lu";
 import { content } from "@/data/content.js";
 import { Button, ActionLink } from "./Button";
 import { Terminal } from "./Terminal";
+import { Certifications } from "./Certifications";
 export function Section({ number, label }: { number: string; label: string }) {
   return (
     <div className="section-label">
@@ -771,6 +772,7 @@ export function Workflow() {
     </section>
   );
 }
+
 export function Education() {
   return (
     <section id="education" className="education-section">
@@ -800,17 +802,6 @@ export function Education() {
             </div>
           ))}
         </div>
-        <div className="certifications">
-          <span>CERTIFICATIONS</span>
-          <div>
-            {content.certifications.map((c) => (
-              <p key={c}>
-                <Check size={14} />
-                {c}
-              </p>
-            ))}
-          </div>
-        </div>
       </div>
       <svg
         className="band-edge bottom-edge"
@@ -823,6 +814,65 @@ export function Education() {
     </section>
   );
 }
+
+// export function Certifications() {
+//   const certs = content.certifications;
+
+//   return (
+//     <section id="certifications" className="section-space">
+//       <div className="page-width">
+//         <div className="section-heading">
+//           <div>
+//             <Section number="06" label="CERTIFICATIONS" />
+//             <h2>
+//               Verified <em>credentials.</em>
+//             </h2>
+//           </div>
+//           <span className="section-note">{String(certs.length).padStart(2, "0")} CERTIFICATES</span>
+//         </div>
+
+//         <p className="certs-intro">
+//           Certifications showcasing my skills across Python, backend development and digital
+//           technologies.
+//         </p>
+
+//         <div className="certs-grid">
+//           {certs.map((cert, i) => {
+//             const hasLink = cert.credentialUrl && cert.credentialUrl !== "#";
+//             return (
+//               <article
+//                 className="certs-card"
+//                 key={cert.title}
+//                 style={{ animationDelay: `${i * 70}ms` }}
+//               >
+//                 <div className="certs-image">
+//                   <img src={cert.image} alt={cert.title} loading="lazy" />
+//                 </div>
+//                 <div className="certs-info">
+//                   <h3>{cert.title}</h3>
+//                   <p>
+//                     {cert.issuer} · {cert.date}
+//                   </p>
+//                   {hasLink && (
+//                     <a
+//                       href={cert.credentialUrl}
+//                       target="_blank"
+//                       rel="noopener noreferrer"
+//                       className="certs-link"
+//                     >
+//                       View Certificate <ArrowRight size={14} aria-hidden="true" />
+//                     </a>
+//                   )}
+//                 </div>
+//               </article>
+//             );
+//           })}
+//         </div>
+//       </div>
+//     </section>
+//   );
+// }
+
 export function Contact() {
   const [form, setForm] = useState({ name: "", email: "", message: "", _gotcha: "" });
   const [state, setState] = useState<"idle" | "sending" | "success" | "error">("idle");
@@ -916,7 +966,7 @@ export function Contact() {
     <section id="contact" className="contact-section">
       <div className="page-width contact-grid">
         <div>
-          <Section number="06" label="GET IN TOUCH" />
+          <Section number="07" label="GET IN TOUCH" />
           <h2>
             Hiring for a<br />
             backend role?
@@ -1078,6 +1128,7 @@ export function Portfolio() {
         <Projects />
         <Workflow />
         <Education />
+        <Certifications />
         <Contact />
       </main>
       <Footer />

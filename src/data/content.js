@@ -1,6 +1,8 @@
 import profileAsset from "@/assets/profile.jpg";
 import secscanPreview from "@/assets/secscan-preview.jpg";
 import gurukulPreview from "@/assets/gurukul-preview.jpg";
+import googleCertificate from "../assets/certificates/image copy.png";
+import pythonCertificate from "../assets/certificates/image.png"
 
 export const content = {
   name: "Aniket Chandiwade",
@@ -13,7 +15,7 @@ export const content = {
   linkedin: "https://www.linkedin.com/in/aniket-chandiwade-74802a269/",
   resume: "/resume.pdf",
   photo: profileAsset,
-  nav: ["About", "Stack", "Projects", "Workflow", "Education", "Contact"],
+  nav: ["About", "Stack", "Projects", "Workflow", "Education", "Certifications", "Contact"],
   hero: {
     start: "I build the",
     accent: "backend",
@@ -121,8 +123,20 @@ export const content = {
     },
   ],
   certifications: [
-    "Python Programming Certification Course",
-    "Digital Marketing Certification · Google Digital Garage",
+    {
+      title: "Python Programming Certification Course",
+      issuer: "Verified Institution",
+      date: "2023",
+      image: pythonCertificate,
+      credentialUrl: "#",
+    },
+    {
+      title: "Digital Marketing Certification",
+      issuer: "Google Digital Garage",
+      date: "2022",
+      image: googleCertificate,
+      credentialUrl: "#",
+    },
   ],
   contact: {
     start: "Hiring for a backend role?",
