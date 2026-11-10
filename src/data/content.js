@@ -2,7 +2,10 @@ import profileAsset from "@/assets/profile.jpg";
 import secscanPreview from "@/assets/secscan-preview.jpg";
 import gurukulPreview from "@/assets/gurukul-preview.jpg";
 import googleCertificate from "../assets/certificates/image copy.png";
-import pythonCertificate from "../assets/certificates/image.png"
+import pythonCertificate from "../assets/certificates/image.png";
+import DataFundamental from "../assets/certificates/image copy 2.png";
+import IKS from "../assets/certificates/IKS.png";
+import BigData from "../assets/certificates/bigdata.png";
 
 export const content = {
   name: "Aniket Chandiwade",
@@ -135,6 +138,27 @@ export const content = {
       issuer: "Google Digital Garage",
       date: "2022",
       image: googleCertificate,
+      credentialUrl: "#",
+    },
+    {
+      title: "Data Fundamentals",
+      issuer: "IBM SkillBuild",
+      date: "2026",
+      image: DataFundamental,
+      credentialUrl: "#",
+    },
+    {
+      title: "Swayam - Indian Knownlege System",
+      issuer: "Swayam",
+      date: "2026",
+      image: IKS,
+      credentialUrl: "#",
+    },
+    {
+      title: "Big Data Computing",
+      issuer: "NPTEL & Skill India",
+      date: "2026",
+      image: BigData,
       credentialUrl: "#",
     },
   ],
